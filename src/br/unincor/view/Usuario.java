@@ -1,18 +1,9 @@
 package br.unincor.view;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import javax.swing.JOptionPane;
 
-/**
- * Nesta classe você deve tratar exceção em todos os métodos que podem vir a
- * lançar exceções por entrada incorreta do usuário e remover os métodos não
- * utilizados.
- *
- */
 public class Usuario {
-
+	
 	public void exibeMsg(String texto) {
 		JOptionPane.showMessageDialog(null, texto, "MENSAGEM", JOptionPane.INFORMATION_MESSAGE);
 	}
@@ -21,55 +12,55 @@ public class Usuario {
 		JOptionPane.showMessageDialog(null, texto, "ERRO", JOptionPane.ERROR_MESSAGE);
 	}
 
-	public void exibeMsgDebug(String texto) {
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-		System.out.println(sdf.format(new Date()) + " - [DEBUG] " + texto);
+	public int exibeMenuPrincipal(){
+		Object[] opcoes = { "Sanduiche", "Sobremesa", "Finalizar Pedido" };
+		
+		int escolha = JOptionPane.showOptionDialog(null, 
+		    "Escolha o produto?",
+		    "Menu Principal", 
+		    JOptionPane.YES_NO_OPTION, 
+		    JOptionPane.QUESTION_MESSAGE, 
+		    null, 
+		    opcoes, 
+		    opcoes[0]);
+
+		return escolha;
 	}
-
-	public Integer exibeMenuPrincipal() {
-		Object[] opcoes = { "Sanduiche", "Sobremesa", "Finalizar pedido" };
-		Integer op = JOptionPane.showOptionDialog(null,
-												"Escolha o produto",
-												"Menu Principal",
-												JOptionPane.DEFAULT_OPTION,
-												JOptionPane.INFORMATION_MESSAGE,
-												null,
-												opcoes,
-												2);
-
-		return op;
-	}
-
-	public Integer exibeMenuPagamento() {
+	
+	public Integer exibeMenuPagamento(){
 		Object[] opcoes = { "Dinheiro", "Cartão" };
-		Integer op = JOptionPane.showOptionDialog(null,
-												"Forma de Pagamento",
-												"Pagamento",
-												JOptionPane.DEFAULT_OPTION,
-												JOptionPane.INFORMATION_MESSAGE,
-												null,
-												opcoes,
-												0);
+		
+		int escolha = JOptionPane.showOptionDialog(null, 
+		    "Forma de pagamento",
+		    "Pagamento", 
+		    JOptionPane.YES_NO_OPTION, 
+		    JOptionPane.QUESTION_MESSAGE, 
+		    null, 
+		    opcoes, 
+		    opcoes[0]);
 
-		return op;
+		return escolha;
 	}
-
-	public Integer recebeInteiro(String texto) {
-		return Integer.parseInt(JOptionPane.showInputDialog(texto));
-	}
-
-	public Long recebeLong(String texto) {
-		return Long.parseLong(JOptionPane.showInputDialog(texto));
-	}
+	
 
 	public Double recebeDouble(String texto) {
-		return Double.parseDouble(JOptionPane.showInputDialog(texto));
+		int f = 0;
+		
+		while(f == 0){
+			try {
+				String resposta = JOptionPane.showInputDialog(texto);
+				Double respostaConvertida = Double.parseDouble(resposta);
+				f = 1;
+				
+				return respostaConvertida;
+			} catch (Exception e) {
+				exibeMsg("Entrada inválida!");
+				f = 0;
+			}
+		}
+		return null;
 	}
-
-	public Float recebeFloat(String texto) {
-		return Float.parseFloat(JOptionPane.showInputDialog(texto));
-	}
-
+	
 	public Boolean recebeBoolean(String texto) {
 		Integer op = JOptionPane.showConfirmDialog(null, texto);
 

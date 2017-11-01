@@ -1,5 +1,15 @@
 package br.unincor.controle;
 
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
+
+import br.unincor.exception.PrecoZeradoException;
+import br.unincor.model.Produto;
+import br.unincor.model.Sanduiche;
+import br.unincor.model.Sobremesa;
+import br.unincor.view.Usuario;
+
 public class Main {
 
 	public static void main(String[] args) {
@@ -29,6 +39,67 @@ public class Main {
 		 * final de cada produto e valor final do pedido.
 		 * 
 		 */
+		
+		List<Produto> listaProdutos = new ArrayList<Produto>();
+		Usuario gui = new Usuario();
+		CalculoPrecos calc = new CalculoPrecos();
+
+		
+		while(true){
+			int opcao = gui.exibeMenuPrincipal();
+			
+			if(opcao == -1 || opcao == 2) {
+				break;
+			}
+			else if(opcao == 0) {
+				Sanduiche sanduba = new Sanduiche(
+						gui.recebeTexto("Entre com o nome do Produto:"),
+						gui.recebeDouble("Preço:"),
+						gui.recebeBoolean("Trio?"),
+						gui.recebeBoolean("Dobro de Recheio?")
+					);
+				
+				listaProdutos.add(sanduba);
+			}
+			else if(opcao == 1) {
+				Sobremesa sobre = new Sobremesa(
+						gui.recebeTexto("Entre com o nome da Sobremesa:"),
+						gui.recebeDouble("Preço: "),
+						gui.recebeBoolean("Adicionais?")
+					);
+				
+				listaProdutos.add(sobre);
+			}
+		}
+		
+		double totalPedido = 0d;
+		String resumoPedido = "Resumo do pedido:\n";
+		
+		int pagamento = gui.exibeMenuPagamento();
+		
+		for(int i = 0; i < listaProdutos.size(); i++){
+			try{
+				calc.calculaPrecoFinal(listaProdutos.get(i));
+				
+				if(pagamento == 0 || pagamento == -1)
+					calc.pagtoDinheiro(listaProdutos.get(i));
+				else if(pagamento == 1)
+					calc.pagtoCartao(listaProdutos.get(i));
+				
+				totalPedido += listaProdutos.get(i).getPreco();
+				resumoPedido += listaProdutos.get(i).verDados() + "\n";
+					
+				
+			}catch(PrecoZeradoException pze){
+				gui.exibeMsgErro(pze.getMessage());
+			}
+		}
+		
+		DecimalFormat f = new DecimalFormat("R$ 0.00");
+		
+		resumoPedido += "\n" + "Valor final: " + f.format(totalPedido);
+		gui.exibeMsg(resumoPedido);
+		
 		
 	}
 }
